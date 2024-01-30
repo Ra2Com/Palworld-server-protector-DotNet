@@ -41,23 +41,23 @@ namespace Palworld_server_protector_DotNet
             InitializeComponent();
             InitializeTimer();
             string buildVersion = Application.ProductVersion;
-            int endIndex = buildVersion.IndexOf('+'); // ÕÒµ½°æ±¾ºÅÖĞµÄ"+"·ûºÅµÄË÷ÒıÎ»ÖÃ
-            string version = buildVersion.Substring(0, endIndex); // Ê¹ÓÃSubstring·½·¨ÌáÈ¡´Ó0µ½endIndexÖ®¼äµÄ×Ó×Ö·û´®
+            int endIndex = buildVersion.IndexOf('+'); // æ‰¾åˆ°ç‰ˆæœ¬å·ä¸­çš„"+"ç¬¦å·çš„ç´¢å¼•ä½ç½®
+            string version = buildVersion.Substring(0, endIndex); // ä½¿ç”¨Substringæ–¹æ³•æå–ä»0åˆ°endIndexä¹‹é—´çš„å­å­—ç¬¦ä¸²
             this.Text = $"Palworld Server Protector v{version}";
         }
 
         private void InitializeTimer()
         {
             memTimer = new Timer();
-            memTimer.Interval = 35000; // ÉèÖÃ¶¨Ê±Æ÷¼ä¸ôÎª5Ãë
+            memTimer.Interval = 35000; // è®¾ç½®å®šæ—¶å™¨é—´éš”ä¸º5ç§’
             memTimer.Tick += Timer_Tick;
 
             saveTimer = new Timer();
-            saveTimer.Interval = 35000; // ÉèÖÃ¶¨Ê±Æ÷¼ä¸ôÎª5Ãë
+            saveTimer.Interval = 35000; // è®¾ç½®å®šæ—¶å™¨é—´éš”ä¸º5ç§’
             saveTimer.Tick += saveTimer_Tick;
 
             getplayerTimer = new Timer();
-            getplayerTimer.Interval = 3000; // ÉèÖÃ¶¨Ê±Æ÷¼ä¸ôÎªsÃë
+            getplayerTimer.Interval = 3000; // è®¾ç½®å®šæ—¶å™¨é—´éš”ä¸ºsç§’
             getplayerTimer.Tick += getplayerTimer_Tick;
         }
 
@@ -65,19 +65,19 @@ namespace Palworld_server_protector_DotNet
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // »ñÈ¡ÏµÍ³ÄÚ´æÊ¹ÓÃ°Ù·Ö±È
+            // è·å–ç³»ç»Ÿå†…å­˜ä½¿ç”¨ç™¾åˆ†æ¯”
             var memoryUsage = Math.Round(GetSystemMemoryUsagePercentage(), 2);
             memProcessbar.Value = (int)memoryUsage;
             memOutput.Text = $"{memoryUsage}%";
             if (checkBox_mem.Checked)
             {
-                //OutputMessageAsync($"µ±Ç°Ê±¼ä£º{DateTime.Now}");
-                OutputMessageAsync($"ÄÚ´æÊ¹ÓÃ°Ù·Ö±È£º{memoryUsage}%");
+                //OutputMessageAsync($"å½“å‰æ—¶é—´ï¼š{DateTime.Now}");
+                OutputMessageAsync($"å†…å­˜ä½¿ç”¨ç™¾åˆ†æ¯”ï¼š{memoryUsage}%");
             }
 
 
 
-            if (checkBox_reboot.Checked)//×Ô¶¯¹Ø·ş
+            if (checkBox_reboot.Checked)//è‡ªåŠ¨å…³æœ
             {
                 if (memoryUsage >= memTarget)
                 {
@@ -86,26 +86,26 @@ namespace Palworld_server_protector_DotNet
                         var isProcessRunning = IsProcessRunning(cmdPath);
                         if (isProcessRunning)
                         {
-                            OutputMessageAsync($"ÄÚ´æ´ïµ½¾¯½äãĞÖµ£¡£¡£¡");
-                            // Ê¹ÓÃrconÏò·şÎñ¶Ë·¢ËÍÖ¸Áî
+                            OutputMessageAsync($"å†…å­˜è¾¾åˆ°è­¦æˆ’é˜ˆå€¼ï¼ï¼ï¼");
+                            // ä½¿ç”¨rconå‘æœåŠ¡ç«¯å‘é€æŒ‡ä»¤
                             RconUtils.TestConnection(rconHost, Convert.ToInt32(rconPortbox.Text), passWordbox.Text);
                             var info = RconUtils.SendMsg("save");
                             OutputMessageAsync($"{info}");
                             var result = RconUtils.SendMsg($"Shutdown {rebootSeconds} The_server_will_restart_in_{rebootSeconds}_seconds.");
 
                             OutputMessageAsync($"{result}");
-                            SendWebhookAsync("ÄÚ´æ´ïµ½¾¯½äãĞÖµ", $"ÄÚ´æÊ¹ÓÃÂÊ£º{memoryUsage}%,ÒÑ³¢ÊÔ¹Ø±Õ·şÎñÆ÷¡£");
-                            ShowNotification($"ÄÚ´æÊ¹ÓÃÂÊ£º{memoryUsage}%,ÒÑ³¢ÊÔ¹Ø±Õ·şÎñÆ÷¡£");
+                            SendWebhookAsync("å†…å­˜è¾¾åˆ°è­¦æˆ’é˜ˆå€¼", $"å†…å­˜ä½¿ç”¨ç‡ï¼š{memoryUsage}%,å·²å°è¯•å…³é—­æœåŠ¡å™¨ã€‚");
+                            ShowNotification($"å†…å­˜ä½¿ç”¨ç‡ï¼š{memoryUsage}%,å·²å°è¯•å…³é—­æœåŠ¡å™¨ã€‚");
                         }
 
 
                     }
                     catch (Exception ex)
                     {
-                        OutputMessageAsync($"·¢ËÍÖ¸ÁîÊ§°Ü£¬Çë¼ì²éÅäÖÃ¡£");
-                        AppendToErrorLog($"·¢ËÍÖ¸ÁîÊ§°Ü£¬Çë¼ì²éÅäÖÃ¡£{ex.Message}");
-                        SendWebhookAsync("RconÊ§°Ü", $"·¢ËÍ¹Ø·şÖ¸ÁîÊ§°Ü£¬Çë¼°Ê±¼ì²é¡£");
-                        ShowNotification($"·¢ËÍ¹Ø·şÖ¸ÁîÊ§°Ü£¬Çë¼°Ê±¼ì²é¡£");
+                        OutputMessageAsync($"å‘é€æŒ‡ä»¤å¤±è´¥ï¼Œè¯·æ£€æŸ¥é…ç½®ã€‚");
+                        AppendToErrorLog($"å‘é€æŒ‡ä»¤å¤±è´¥ï¼Œè¯·æ£€æŸ¥é…ç½®ã€‚{ex.Message}");
+                        SendWebhookAsync("Rconå¤±è´¥", $"å‘é€å…³æœæŒ‡ä»¤å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
+                        ShowNotification($"å‘é€å…³æœæŒ‡ä»¤å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
 
                     }
 
@@ -117,10 +117,10 @@ namespace Palworld_server_protector_DotNet
             }
 
             if (checkBox_startprocess.Checked)
-            { //¼à¿Ø&×ÔÆô
-              // ¼ì²é½ø³ÌÊÇ·ñÔÚÔËĞĞ
+            { //ç›‘æ§&è‡ªå¯
+              // æ£€æŸ¥è¿›ç¨‹æ˜¯å¦åœ¨è¿è¡Œ
                 var isProcessRunning = IsProcessRunning(cmdPath);
-                OutputMessageAsync($"½ø³ÌÔËĞĞ×´Ì¬£º{(isProcessRunning ? "ÔËĞĞÖĞ" : "Î´ÔËĞĞ")}");
+                OutputMessageAsync($"è¿›ç¨‹è¿è¡ŒçŠ¶æ€ï¼š{(isProcessRunning ? "è¿è¡Œä¸­" : "æœªè¿è¡Œ")}");
                 if (!isProcessRunning)
                 {
                     if (!isProcessRunning)
@@ -131,25 +131,25 @@ namespace Palworld_server_protector_DotNet
 
                             if (checkBox_args.Checked && arguments.Text != "")
                             {
-                                OutputMessageAsync($"ÕıÔÚ³¢ÊÔÆô¶¯·şÎñ¶Ë({arguments.Text})...");
+                                OutputMessageAsync($"æ­£åœ¨å°è¯•å¯åŠ¨æœåŠ¡ç«¯({arguments.Text})...");
                                 Process.Start(cmdPath, arguments.Text);
                             }
                             else
                             {
-                                OutputMessageAsync($"ÕıÔÚ³¢ÊÔÆô¶¯·şÎñ¶Ë...");
+                                OutputMessageAsync($"æ­£åœ¨å°è¯•å¯åŠ¨æœåŠ¡ç«¯...");
 
                                 Process.Start(cmdPath);
                             }
                         }
                         catch (Exception ex)
                         {
-                            OutputMessageAsync($"·şÎñ¶ËÆô¶¯Ê§°Ü¡£");
-                            AppendToErrorLog($"·şÎñ¶ËÆô¶¯Ê§°Ü£º{ex.Message}");
-                            SendWebhookAsync("·şÎñ¶ËÆô¶¯Ê§°Ü", $"·şÎñ¶ËÆô¶¯Ê§°Ü£¬Çë¼°Ê±¼ì²é¡£");
-                            ShowNotification($"·şÎñ¶ËÆô¶¯Ê§°Ü£¬Çë¼°Ê±¼ì²é¡£");
+                            OutputMessageAsync($"æœåŠ¡ç«¯å¯åŠ¨å¤±è´¥ã€‚");
+                            AppendToErrorLog($"æœåŠ¡ç«¯å¯åŠ¨å¤±è´¥ï¼š{ex.Message}");
+                            SendWebhookAsync("æœåŠ¡ç«¯å¯åŠ¨å¤±è´¥", $"æœåŠ¡ç«¯å¯åŠ¨å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
+                            ShowNotification($"æœåŠ¡ç«¯å¯åŠ¨å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
                         }
-                        SendWebhookAsync("Æô¶¯·şÎñ¶Ë", $"ÒÑ³¢ÊÔÆô¶¯·şÎñ¶Ë¡£");
-                        ShowNotification($"ÒÑ³¢ÊÔÆô¶¯·şÎñ¶Ë¡£");
+                        SendWebhookAsync("å¯åŠ¨æœåŠ¡ç«¯", $"å·²å°è¯•å¯åŠ¨æœåŠ¡ç«¯ã€‚");
+                        ShowNotification($"å·²å°è¯•å¯åŠ¨æœåŠ¡ç«¯ã€‚");
 
                     }
 
@@ -158,7 +158,7 @@ namespace Palworld_server_protector_DotNet
 
         }
 
-        private void getplayerTimer_Tick(object sender, EventArgs e) //»ñÈ¡ÔÚÏßÍæ¼Ò
+        private void getplayerTimer_Tick(object sender, EventArgs e) //è·å–åœ¨çº¿ç©å®¶
         {
             try
             {
@@ -170,7 +170,7 @@ namespace Palworld_server_protector_DotNet
                 RconUtils.TestConnection(rconHost, Convert.ToInt32(rconPortbox.Text), passWordbox.Text);
                 var players = RconUtils.ShowPlayers();
 
-                playersCounterLabel.Text = $"µ±Ç°ÔÚÏß£º{players.Count}ÈË";
+                playersCounterLabel.Text = $"å½“å‰åœ¨çº¿ï¼š{players.Count}äºº";
                 // Clear the playersView
                 playersView.Items.Clear();
 
@@ -183,7 +183,7 @@ namespace Palworld_server_protector_DotNet
             }
             catch (Exception ex)
             {
-                AppendToErrorLog($"»ñÈ¡ÔÚÏßÍæ¼ÒÊ§°Ü£º{ex.Message}");
+                AppendToErrorLog($"è·å–åœ¨çº¿ç©å®¶å¤±è´¥ï¼š{ex.Message}");
             }
         }
         private void CopyGameDataToBackupPath()
@@ -192,7 +192,7 @@ namespace Palworld_server_protector_DotNet
             {
                 if (backupPath == "")
                 {
-                    OutputMessageAsync($"Î´ÉèÖÃ±¸·İ´æ·ÅÄ¿Â¼¡£ÎŞ·¨±¸·İ¡£");
+                    OutputMessageAsync($"æœªè®¾ç½®å¤‡ä»½å­˜æ”¾ç›®å½•ã€‚æ— æ³•å¤‡ä»½ã€‚");
                     return;
                 }
                 string backupFolderName = $"SaveGames-{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.zip";
@@ -200,13 +200,13 @@ namespace Palworld_server_protector_DotNet
 
                 if (!Directory.Exists(gamedataPath))
                 {
-                    OutputMessageAsync($"ÓÎÏ·´æµµÂ·¾¶²»´æÔÚ£º{gamedataPath}");
+                    OutputMessageAsync($"æ¸¸æˆå­˜æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼š{gamedataPath}");
                     return;
                 }
 
                 if (!Directory.Exists(backupPath))
                 {
-                    OutputMessageAsync($"´æµµ±¸·İÂ·¾¶²»´æÔÚ£º{backupPath}");
+                    OutputMessageAsync($"å­˜æ¡£å¤‡ä»½è·¯å¾„ä¸å­˜åœ¨ï¼š{backupPath}");
                     return;
                 }
 
@@ -223,16 +223,16 @@ namespace Palworld_server_protector_DotNet
                 // Delete the temporary game data directory
                 Directory.Delete(tempGameDataPath, true);
 
-                OutputMessageAsync($"ÓÎÏ·´æµµÒÑ³É¹¦±¸·İ");
-                SendWebhookAsync("´æµµ±¸·İ", $"ÓÎÏ·´æµµÒÑ³É¹¦±¸·İ¡£");
-                ShowNotification($"ÓÎÏ·´æµµÒÑ³É¹¦±¸·İ¡£");
+                OutputMessageAsync($"æ¸¸æˆå­˜æ¡£å·²æˆåŠŸå¤‡ä»½");
+                SendWebhookAsync("å­˜æ¡£å¤‡ä»½", $"æ¸¸æˆå­˜æ¡£å·²æˆåŠŸå¤‡ä»½ã€‚");
+                ShowNotification($"æ¸¸æˆå­˜æ¡£å·²æˆåŠŸå¤‡ä»½ã€‚");
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"±¸·İ´æµµÊ§°Ü");
-                AppendToErrorLog($"±¸·İ´æµµÊ§°Ü£º{ex.Message}");
-                SendWebhookAsync("´æµµ±¸·İÊ§°Ü", $"´æµµ±¸·İÊ§°Ü£¬Çë¼°Ê±¼ì²é¡£");
-                ShowNotification($"´æµµ±¸·İÊ§°Ü£¬Çë¼°Ê±¼ì²é¡£");
+                OutputMessageAsync($"å¤‡ä»½å­˜æ¡£å¤±è´¥");
+                AppendToErrorLog($"å¤‡ä»½å­˜æ¡£å¤±è´¥ï¼š{ex.Message}");
+                SendWebhookAsync("å­˜æ¡£å¤‡ä»½å¤±è´¥", $"å­˜æ¡£å¤‡ä»½å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
+                ShowNotification($"å­˜æ¡£å¤‡ä»½å¤±è´¥ï¼Œè¯·åŠæ—¶æ£€æŸ¥ã€‚");
             }
         }
 
@@ -244,9 +244,9 @@ namespace Palworld_server_protector_DotNet
             // If the source directory does not exist, throw an exception
             if (!dir.Exists)
             {
-                OutputMessageAsync($"ÓÎÏ·´æµµÂ·¾¶²»´æÔÚ£º{sourceDirName}");
-                AppendToErrorLog($"ÓÎÏ·´æµµÂ·¾¶²»´æÔÚ£º{sourceDirName}");
-                ShowNotification($"ÓÎÏ·´æµµÂ·¾¶²»´æÔÚ£º{sourceDirName}");
+                OutputMessageAsync($"æ¸¸æˆå­˜æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼š{sourceDirName}");
+                AppendToErrorLog($"æ¸¸æˆå­˜æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼š{sourceDirName}");
+                ShowNotification($"æ¸¸æˆå­˜æ¡£è·¯å¾„ä¸å­˜åœ¨ï¼š{sourceDirName}");
             }
 
             // If the destination directory does not exist, create it
@@ -274,9 +274,9 @@ namespace Palworld_server_protector_DotNet
             }
         }
 
-        private void saveTimer_Tick(object sender, EventArgs e) //´æµµÂß¼­
+        private void saveTimer_Tick(object sender, EventArgs e) //å­˜æ¡£é€»è¾‘
         {
-            OutputMessageAsync($"×Ô¶¯´æµµÖĞ...");
+            OutputMessageAsync($"è‡ªåŠ¨å­˜æ¡£ä¸­...");
             CopyGameDataToBackupPath();
 
         }
@@ -310,10 +310,10 @@ namespace Palworld_server_protector_DotNet
             {
                 cmdbox.Text = openFileDialog.FileName;
                 cmdPath = cmdbox.Text;
-                OutputMessageAsync($"ÒÑÑ¡Ôñ·şÎñ¶ËÂ·¾¶Îª£º{cmdPath}");
+                OutputMessageAsync($"å·²é€‰æ‹©æœåŠ¡ç«¯è·¯å¾„ä¸ºï¼š{cmdPath}");
                 gamedataPath = Path.Combine(Path.GetDirectoryName(cmdPath), "Pal", "Saved", "SaveGames");
                 gamedataBox.Text = gamedataPath;
-                OutputMessageAsync($"ÓÎÏ·´æµµÂ·¾¶ĞŞ¸ÄÎª£º{gamedataPath}");
+                OutputMessageAsync($"æ¸¸æˆå­˜æ¡£è·¯å¾„ä¿®æ”¹ä¸ºï¼š{gamedataPath}");
             }
         }
 
@@ -357,14 +357,14 @@ namespace Palworld_server_protector_DotNet
             LoadConfig();
             memTimer.Start();
             string buildVersion = Application.ProductVersion;
-            int endIndex = buildVersion.IndexOf('+'); 
-            string version = buildVersion.Substring(0, endIndex); //È¥µô¹¹½¨±êÊ¶·û
-            verisionLabel.Text = $"µ±Ç°°æ±¾£º{version}";
+            int endIndex = buildVersion.IndexOf('+');
+            string version = buildVersion.Substring(0, endIndex); //å»æ‰æ„å»ºæ ‡è¯†ç¬¦
+            verisionLabel.Text = $"å½“å‰ç‰ˆæœ¬ï¼š{version}";
 
-            OutputMessageAsync($"µ±Ç°¹¹½¨°æ±¾ºÅ£º{version}");
-            OutputMessageAsync($"±¾ÏîÄ¿¿ªÔ´µØÖ·£ºhttps://github.com/KirosHan/Palworld-server-protector-DotNet");
+            OutputMessageAsync($"å½“å‰æ„å»ºç‰ˆæœ¬å·ï¼š{version}");
+            OutputMessageAsync($"æœ¬é¡¹ç›®å¼€æºåœ°å€ï¼šhttps://github.com/KirosHan/Palworld-server-protector-DotNet");
 
-            OutputMessageAsync($"ÇëÏÈÅäÖÃºÃĞÅÏ¢£¬ÔÙ¹´Ñ¡¹¦ÄÜÆô¶¯");
+            OutputMessageAsync($"è¯·å…ˆé…ç½®å¥½ä¿¡æ¯ï¼Œå†å‹¾é€‰åŠŸèƒ½å¯åŠ¨");
 
 
         }
@@ -445,16 +445,16 @@ namespace Palworld_server_protector_DotNet
                 }
                 else
                 {
-                    OutputMessageAsync($"Î´ÕÒµ½ÅäÖÃÎÄ¼ş£¬ÒÑ¼ÓÔØÄ¬ÈÏÅäÖÃ¡£");
-                    ShowNotification($"Î´ÕÒµ½ÅäÖÃÎÄ¼ş£¬ÒÑ¼ÓÔØÄ¬ÈÏÅäÖÃ¡£");
+                    OutputMessageAsync($"æœªæ‰¾åˆ°é…ç½®æ–‡ä»¶ï¼Œå·²åŠ è½½é»˜è®¤é…ç½®ã€‚");
+                    ShowNotification($"æœªæ‰¾åˆ°é…ç½®æ–‡ä»¶ï¼Œå·²åŠ è½½é»˜è®¤é…ç½®ã€‚");
                     dataInit();
                 }
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"¶ÁÈ¡ÅäÖÃÎÄ¼şÊ§°Ü¡£");
-                ShowNotification($"¶ÁÈ¡ÅäÖÃÎÄ¼şÊ§°Ü¡£");
-                AppendToErrorLog($"¶ÁÈ¡ÅäÖÃÎÄ¼şÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"è¯»å–é…ç½®æ–‡ä»¶å¤±è´¥ã€‚");
+                ShowNotification($"è¯»å–é…ç½®æ–‡ä»¶å¤±è´¥ã€‚");
+                AppendToErrorLog($"è¯»å–é…ç½®æ–‡ä»¶å¤±è´¥ï¼š{ex.Message}");
             }
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -488,8 +488,8 @@ namespace Palworld_server_protector_DotNet
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"±£´æÅäÖÃÎÄ¼şÊ§°Ü¡£");
-                AppendToErrorLog($"±£´æÅäÖÃÎÄ¼şÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"ä¿å­˜é…ç½®æ–‡ä»¶å¤±è´¥ã€‚");
+                AppendToErrorLog($"ä¿å­˜é…ç½®æ–‡ä»¶å¤±è´¥ï¼š{ex.Message}");
 
             }
         }
@@ -519,17 +519,17 @@ namespace Palworld_server_protector_DotNet
         {
             if (cmdPath == "")
             {
-                OutputMessageAsync($"ÇëÏÈÉèÖÃ·şÎñ¶ËÂ·¾¶¡£");
+                OutputMessageAsync($"è¯·å…ˆè®¾ç½®æœåŠ¡ç«¯è·¯å¾„ã€‚");
                 checkBox_startprocess.Checked = false;
 
             }
             else if (checkBox_startprocess.Checked)
             {
-                OutputMessageAsync($"ÒÑ¿ªÊ¼¼à¿Ø·şÎñ¶Ë¡£");
+                OutputMessageAsync($"å·²å¼€å§‹ç›‘æ§æœåŠ¡ç«¯ã€‚");
             }
             else
             {
-                OutputMessageAsync($"ÒÑÍ£Ö¹¼à¿Ø·şÎñ¶Ë¡£");
+                OutputMessageAsync($"å·²åœæ­¢ç›‘æ§æœåŠ¡ç«¯ã€‚");
             }
 
         }
@@ -540,26 +540,26 @@ namespace Palworld_server_protector_DotNet
             {
                 if (gamedataPath == "")
                 {
-                    OutputMessageAsync($"ÇëÏÈÑ¡ÔñÓÎÏ·´æµµÂ·¾¶¡£");
+                    OutputMessageAsync($"è¯·å…ˆé€‰æ‹©æ¸¸æˆå­˜æ¡£è·¯å¾„ã€‚");
                     checkBox_save.Checked = false;
                 }
                 else if (backupPath == "")
                 {
-                    OutputMessageAsync($"ÇëÏÈÑ¡Ôñ´æµµ±¸·İÂ·¾¶¡£");
+                    OutputMessageAsync($"è¯·å…ˆé€‰æ‹©å­˜æ¡£å¤‡ä»½è·¯å¾„ã€‚");
                     checkBox_save.Checked = false;
                 }
                 else
                 {
                     saveTimer.Interval = Convert.ToInt32(backupSecondsbox.Value) * 1000;
                     saveTimer.Start();
-                    OutputMessageAsync($"ÒÑÆôÓÃ×Ô¶¯±¸·İ´æµµ¡£");
+                    OutputMessageAsync($"å·²å¯ç”¨è‡ªåŠ¨å¤‡ä»½å­˜æ¡£ã€‚");
                 }
 
             }
             else
             {
                 saveTimer.Stop();
-                OutputMessageAsync($"ÒÑÍ£ÓÃ×Ô¶¯±¸·İ´æµµ¡£");
+                OutputMessageAsync($"å·²åœç”¨è‡ªåŠ¨å¤‡ä»½å­˜æ¡£ã€‚");
             }
 
         }
@@ -571,7 +571,7 @@ namespace Palworld_server_protector_DotNet
             {
                 backupPathbox.Text = folderBrowserDialog.SelectedPath;
                 backupPath = backupPathbox.Text;
-                OutputMessageAsync($"ÒÑÑ¡Ôñ´æµµ±¸·İÂ·¾¶Îª£º{backupPath}");
+                OutputMessageAsync($"å·²é€‰æ‹©å­˜æ¡£å¤‡ä»½è·¯å¾„ä¸ºï¼š{backupPath}");
             }
         }
 
@@ -592,7 +592,7 @@ namespace Palworld_server_protector_DotNet
         private void passWordbox_KeyPress(object sender, KeyPressEventArgs e)
         {
             rconPassword = passWordbox.Text;
-            //OutputMessageAsync($"ÃÜÂëÒÑÉèÖÃÎª£º{rconPassword}");
+            //OutputMessageAsync($"å¯†ç å·²è®¾ç½®ä¸ºï¼š{rconPassword}");
         }
 
         private void rebootSecondbox_ValueChanged(object sender, EventArgs e)
@@ -606,16 +606,16 @@ namespace Palworld_server_protector_DotNet
             if (cmdPath == "")
             {
                 checkBox_reboot.Checked = false;
-                OutputMessageAsync($"ÇëÏÈÑ¡Ôñ·şÎñ¶ËÂ·¾¶¡£");
+                OutputMessageAsync($"è¯·å…ˆé€‰æ‹©æœåŠ¡ç«¯è·¯å¾„ã€‚");
             }
 
             else if (checkBox_reboot.Checked)
             {
-                OutputMessageAsync($"ÒÑÆôÓÃ×Ô¶¯¹Ø·ş¡£");
+                OutputMessageAsync($"å·²å¯ç”¨è‡ªåŠ¨å…³æœã€‚");
             }
             else
             {
-                OutputMessageAsync($"ÒÑÍ£ÓÃ×Ô¶¯¹Ø·ş¡£");
+                OutputMessageAsync($"å·²åœç”¨è‡ªåŠ¨å…³æœã€‚");
             }
         }
 
@@ -624,13 +624,13 @@ namespace Palworld_server_protector_DotNet
             if (checkBox_geplayers.Checked)
             {
                 getplayerTimer.Start();
-                OutputMessageAsync($"ÒÑÆôÓÃ×Ô¶¯»ñÈ¡ÔÚÏßÍæ¼Ò¡£");
+                OutputMessageAsync($"å·²å¯ç”¨è‡ªåŠ¨è·å–åœ¨çº¿ç©å®¶ã€‚");
             }
             else
             {
                 getplayerTimer.Stop();
-                OutputMessageAsync($"ÒÑÍ£ÓÃ×Ô¶¯»ñÈ¡ÔÚÏßÍæ¼Ò¡£");
-                playersCounterLabel.Text = $"µ±Ç°ÔÚÏß£ºÎ´Öª";
+                OutputMessageAsync($"å·²åœç”¨è‡ªåŠ¨è·å–åœ¨çº¿ç©å®¶ã€‚");
+                playersCounterLabel.Text = $"å½“å‰åœ¨çº¿ï¼šæœªçŸ¥";
             }
         }
 
@@ -664,8 +664,8 @@ namespace Palworld_server_protector_DotNet
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"¹Ø·şÖ¸Áî·¢ËÍÊ§°Ü¡£");
-                AppendToErrorLog($"¹Ø·şÖ¸Áî·¢ËÍÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"å…³æœæŒ‡ä»¤å‘é€å¤±è´¥ã€‚");
+                AppendToErrorLog($"å…³æœæŒ‡ä»¤å‘é€å¤±è´¥ï¼š{ex.Message}");
             }
 
         }
@@ -681,14 +681,14 @@ namespace Palworld_server_protector_DotNet
                 int startIndex = info.IndexOf("[") + 1;
                 int endIndex = info.IndexOf("]");
                 string version = info.Substring(startIndex, endIndex - startIndex);
-                versionLabel.Text = $"·şÎñ¶Ë°æ±¾£º{version}";
-                OutputMessageAsync($"µ±Ç°·şÎñ¶Ë°æ±¾£º{version}");
+                versionLabel.Text = $"æœåŠ¡ç«¯ç‰ˆæœ¬ï¼š{version}";
+                OutputMessageAsync($"å½“å‰æœåŠ¡ç«¯ç‰ˆæœ¬ï¼š{version}");
 
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"infoÖ¸Áî·¢ËÍÊ§°Ü¡£");
-                AppendToErrorLog($"infoÖ¸Áî·¢ËÍÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"infoæŒ‡ä»¤å‘é€å¤±è´¥ã€‚");
+                AppendToErrorLog($"infoæŒ‡ä»¤å‘é€å¤±è´¥ï¼š{ex.Message}");
             }
 
         }
@@ -702,14 +702,14 @@ namespace Palworld_server_protector_DotNet
                 textBox1.Text = textBox1.Text.Replace(" ", "_");
                 var info = RconUtils.SendMsg($"broadcast {textBox1.Text.Trim()}");
 
-                OutputMessageAsync($"ÒÑ·¢ËÍ£º{info}");
+                OutputMessageAsync($"å·²å‘é€ï¼š{info}");
 
             }
 
             catch (Exception ex)
             {
-                OutputMessageAsync($"broadcastÖ¸Áî·¢ËÍÊ§°Ü¡£");
-                AppendToErrorLog($"broadcastÖ¸Áî·¢ËÍÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"broadcastæŒ‡ä»¤å‘é€å¤±è´¥ã€‚");
+                AppendToErrorLog($"broadcastæŒ‡ä»¤å‘é€å¤±è´¥ï¼š{ex.Message}");
             }
         }
 
@@ -731,7 +731,7 @@ namespace Palworld_server_protector_DotNet
             if (checkBox_args.Checked)
             {
                 arguments.Enabled = true;
-                OutputMessageAsync($"ÇëÌîĞ´·şÎñ¶ËÆô¶¯²ÎÊı¡£");
+                OutputMessageAsync($"è¯·å¡«å†™æœåŠ¡ç«¯å¯åŠ¨å‚æ•°ã€‚");
             }
             else
             {
@@ -746,7 +746,7 @@ namespace Palworld_server_protector_DotNet
             {
                 gamedataBox.Text = folderBrowserDialog.SelectedPath;
                 gamedataPath = gamedataBox.Text;
-                OutputMessageAsync($"ÒÑÑ¡ÔñÓÎÏ·´æµµÂ·¾¶Îª£º{gamedataPath}");
+                OutputMessageAsync($"å·²é€‰æ‹©æ¸¸æˆå­˜æ¡£è·¯å¾„ä¸ºï¼š{gamedataPath}");
             }
         }
         private bool isKeyUpEvent_backupSecond = false;
@@ -755,7 +755,7 @@ namespace Palworld_server_protector_DotNet
             var newBackupSecond = Convert.ToInt32(backupSecondsbox.Value) * 1000;
             saveTimer.Interval = newBackupSecond;
             isKeyUpEvent_backupSecond = true;
-            OutputMessageAsync($"´æµµÖÜÆÚÒÑµ÷ÕûÎª£º{newBackupSecond / 1000}Ãë");
+            OutputMessageAsync($"å­˜æ¡£å‘¨æœŸå·²è°ƒæ•´ä¸ºï¼š{newBackupSecond / 1000}ç§’");
         }
         private void backupSecondsbox_ValueChanged(object sender, EventArgs e)
         {
@@ -766,7 +766,7 @@ namespace Palworld_server_protector_DotNet
             }
             var newBackupSecond = Convert.ToInt32(backupSecondsbox.Value) * 1000;
             saveTimer.Interval = newBackupSecond;
-            OutputMessageAsync($"´æµµÖÜÆÚÒÑµ÷ÕûÎª£º{newBackupSecond / 1000}Ãë");
+            OutputMessageAsync($"å­˜æ¡£å‘¨æœŸå·²è°ƒæ•´ä¸ºï¼š{newBackupSecond / 1000}ç§’");
         }
 
         private bool isKeyUpEvent_rebootSecond = false;
@@ -774,7 +774,7 @@ namespace Palworld_server_protector_DotNet
         {
             rebootSeconds = Convert.ToInt32(rebootSecondbox.Value);
             isKeyUpEvent_rebootSecond = true;
-            OutputMessageAsync($"ÖØÆôÑÓ³ÙÒÑÉèÖÃÎª£º{rebootSeconds}Ãë");
+            OutputMessageAsync($"é‡å¯å»¶è¿Ÿå·²è®¾ç½®ä¸ºï¼š{rebootSeconds}ç§’");
         }
 
         private void rebootSecondbox_ValueChanged_1(object sender, EventArgs e)
@@ -785,7 +785,7 @@ namespace Palworld_server_protector_DotNet
                 return;
             }
             rebootSeconds = Convert.ToInt32(rebootSecondbox.Value);
-            OutputMessageAsync($"ÖØÆôÑÓ³ÙÒÑÉèÖÃÎª£º{rebootSeconds}Ãë");
+            OutputMessageAsync($"é‡å¯å»¶è¿Ÿå·²è®¾ç½®ä¸ºï¼š{rebootSeconds}ç§’");
         }
 
         private bool isKeyUpEvent_checkSecond = false;
@@ -799,7 +799,7 @@ namespace Palworld_server_protector_DotNet
             }
             var newSecond = Convert.ToInt32(checkSecondbox.Value);
             memTimer.Interval = newSecond * 1000;
-            OutputMessageAsync($"¼à²âÖÜÆÚÒÑµ÷ÕûÎª£º{newSecond}Ãë");
+            OutputMessageAsync($"ç›‘æµ‹å‘¨æœŸå·²è°ƒæ•´ä¸ºï¼š{newSecond}ç§’");
         }
 
         private void checkSecondbox_KeyUp(object sender, KeyEventArgs e)
@@ -807,7 +807,7 @@ namespace Palworld_server_protector_DotNet
             var newSecond = Convert.ToInt32(checkSecondbox.Value);
             memTimer.Interval = newSecond * 1000;
             isKeyUpEvent_checkSecond = true;
-            OutputMessageAsync($"¼à²âÖÜÆÚÒÑµ÷ÕûÎª£º{newSecond}Ãë");
+            OutputMessageAsync($"ç›‘æµ‹å‘¨æœŸå·²è°ƒæ•´ä¸ºï¼š{newSecond}ç§’");
         }
 
         private bool isKeyUpEvent_memTarget = false;
@@ -816,7 +816,7 @@ namespace Palworld_server_protector_DotNet
         {
             memTarget = Convert.ToInt32(memTargetbox.Value);
             isKeyUpEvent_memTarget = true;
-            OutputMessageAsync($"ÄÚ´æãĞÖµÒÑµ÷ÕûÎª£º{memTarget}%");
+            OutputMessageAsync($"å†…å­˜é˜ˆå€¼å·²è°ƒæ•´ä¸ºï¼š{memTarget}%");
         }
         private void memTargetbox_ValueChanged(object sender, EventArgs e)
         {
@@ -826,7 +826,7 @@ namespace Palworld_server_protector_DotNet
                 return;
             }
             memTarget = Convert.ToInt32(memTargetbox.Value);
-            OutputMessageAsync($"ÄÚ´æãĞÖµÒÑµ÷ÕûÎª£º{memTarget}%");
+            OutputMessageAsync($"å†…å­˜é˜ˆå€¼å·²è°ƒæ•´ä¸ºï¼š{memTarget}%");
 
         }
 
@@ -855,8 +855,8 @@ namespace Palworld_server_protector_DotNet
 
             catch (Exception ex)
             {
-                OutputMessageAsync($"KickplayerÖ¸Áî·¢ËÍÊ§°Ü¡£");
-                AppendToErrorLog($"KickplayerÖ¸Áî·¢ËÍÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"KickplayeræŒ‡ä»¤å‘é€å¤±è´¥ã€‚");
+                AppendToErrorLog($"KickplayeræŒ‡ä»¤å‘é€å¤±è´¥ï¼š{ex.Message}");
             }
         }
 
@@ -874,8 +874,8 @@ namespace Palworld_server_protector_DotNet
 
             catch (Exception ex)
             {
-                OutputMessageAsync($"BanPlayerÖ¸Áî·¢ËÍÊ§°Ü¡£{ex.Message}");
-                AppendToErrorLog($"BanPlayerÖ¸Áî·¢ËÍÊ§°Ü¡£");
+                OutputMessageAsync($"BanPlayeræŒ‡ä»¤å‘é€å¤±è´¥ã€‚{ex.Message}");
+                AppendToErrorLog($"BanPlayeræŒ‡ä»¤å‘é€å¤±è´¥ã€‚");
             }
         }
         private void AppendToErrorLog(string content)
@@ -912,7 +912,7 @@ namespace Palworld_server_protector_DotNet
         private void testWebhookbutton_Click(object sender, EventArgs e)
         {
 
-            SendWebhookAsync("²âÊÔ±êÌâ", "ÕâÊÇÒ»Ìõ²âÊÔÍÆËÍÍ¨Öª¡£");
+            SendWebhookAsync("æµ‹è¯•æ ‡é¢˜", "è¿™æ˜¯ä¸€æ¡æµ‹è¯•æ¨é€é€šçŸ¥ã€‚");
 
         }
         private async Task SendWebhookAsync(string title, string message)
@@ -923,12 +923,12 @@ namespace Palworld_server_protector_DotNet
             }
             if (webhookBox.Text == "")
             {
-                OutputMessageAsync($"WebhookµØÖ·Îª¿Õ¡£");
+                OutputMessageAsync($"Webhookåœ°å€ä¸ºç©ºã€‚");
                 return;
             }
             if (!webhookBox.Text.Contains("http"))
             {
-                OutputMessageAsync($"Webhook¸ñÊ½²»ÕıÈ·¡£");
+                OutputMessageAsync($"Webhookæ ¼å¼ä¸æ­£ç¡®ã€‚");
                 return;
             }
             try
@@ -940,13 +940,13 @@ namespace Palworld_server_protector_DotNet
                     string json = webhook.GenerateJson(webhookUrl, title, message);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     await client.PostAsync(webhookUrl, content);
-                    OutputMessageAsync($"Webhook·¢ËÍ³É¹¦¡£");
+                    OutputMessageAsync($"Webhookå‘é€æˆåŠŸã€‚");
                 }
             }
             catch (Exception ex)
             {
-                OutputMessageAsync($"Webhook·¢ËÍÊ§°Ü¡£");
-                AppendToErrorLog($"Webhook·¢ËÍÊ§°Ü£º{ex.Message}");
+                OutputMessageAsync($"Webhookå‘é€å¤±è´¥ã€‚");
+                AppendToErrorLog($"Webhookå‘é€å¤±è´¥ï¼š{ex.Message}");
             }
 
         }
@@ -957,13 +957,13 @@ namespace Palworld_server_protector_DotNet
             {
                 webhookBox.Enabled = true;
                 testWebhookbutton.Enabled = true;
-                OutputMessageAsync($"ÒÑÆôÓÃWebhookÍÆËÍ¡£");
+                OutputMessageAsync($"å·²å¯ç”¨Webhookæ¨é€ã€‚");
             }
             else
             {
                 webhookBox.Enabled = false;
                 testWebhookbutton.Enabled = false;
-                OutputMessageAsync($"ÒÑÍ£ÓÃWebhookÍÆËÍ¡£");
+                OutputMessageAsync($"å·²åœç”¨Webhookæ¨é€ã€‚");
             }
         }
 
@@ -985,15 +985,15 @@ namespace Palworld_server_protector_DotNet
         }
         private void ShowNotification(string message)
         {
-            if(checkBox_Noti.Checked)
+            if (checkBox_Noti.Checked)
             {
                 notifyIcon1.BalloonTipText = message;
                 notifyIcon1.ShowBalloonTip(2000);
             }
-            
+
         }
 
-        /**  HTTP¹¦ÄÜÒÑÆúÓÃ
+        /**  HTTPåŠŸèƒ½å·²å¼ƒç”¨
         private Thread httpThread;
         private bool isHttpServerRunning;
 
