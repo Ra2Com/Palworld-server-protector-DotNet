@@ -12,6 +12,7 @@ namespace Palworld_server_protector_DotNet
     using System.Text;
     using static System.Windows.Forms.LinkLabel;
     using System.Net;
+    using ServerProtectorCore;
 
     public partial class Form1 : Form
     {
@@ -30,6 +31,8 @@ namespace Palworld_server_protector_DotNet
 
         private const string ConfigFilePath = "config.ini";
 
+        private string clientVersion;
+
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
 
@@ -42,8 +45,8 @@ namespace Palworld_server_protector_DotNet
             InitializeTimer();
             string buildVersion = Application.ProductVersion;
             int endIndex = buildVersion.IndexOf('+'); // 找到版本号中的"+"符号的索引位置
-            string version = buildVersion.Substring(0, endIndex); // 使用Substring方法提取从0到endIndex之间的子字符串
-            this.Text = $"Palworld Server Protector v{version}";
+            clientVersion = endIndex > 0 ? buildVersion.Substring(0, endIndex) : buildVersion; // 使用Substring方法提取从0到endIndex之间的子字符串
+            this.Text = $"Palworld Server Protector v{clientVersion}";
         }
 
         private void InitializeTimer()
@@ -356,12 +359,10 @@ namespace Palworld_server_protector_DotNet
 
             LoadConfig();
             memTimer.Start();
-            string buildVersion = Application.ProductVersion;
-            int endIndex = buildVersion.IndexOf('+');
-            string version = buildVersion.Substring(0, endIndex); //去掉构建标识符
-            verisionLabel.Text = $"当前版本：{version}";
+            
+            verisionLabel.Text = $"当前版本：{clientVersion}";
 
-            OutputMessageAsync($"当前构建版本号：{version}");
+            OutputMessageAsync($"当前构建版本号：{clientVersion}");
             OutputMessageAsync($"本项目开源地址：https://github.com/KirosHan/Palworld-server-protector-DotNet");
 
             OutputMessageAsync($"请先配置好信息，再勾选功能启动");
