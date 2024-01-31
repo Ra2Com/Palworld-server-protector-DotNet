@@ -36,5 +36,7 @@ namespace ServerProtectorCore.Entities
 
         public string GameDataPath { get; set; }
 
+        public bool CheckPlayers { get; set; }
+
     }
 }

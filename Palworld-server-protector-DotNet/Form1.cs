@@ -59,9 +59,9 @@ namespace Palworld_server_protector_DotNet
             //saveTimer.Interval = 35000; // 设置定时器间隔为5秒
             //saveTimer.Tick += saveTimer_Tick;
 
-            getplayerTimer = new Timer();
-            getplayerTimer.Interval = 3000; // 设置定时器间隔为s秒
-            getplayerTimer.Tick += getplayerTimer_Tick;
+            //getplayerTimer = new Timer();
+            //getplayerTimer.Interval = 3000; // 设置定时器间隔为s秒
+            //getplayerTimer.Tick += getplayerTimer_Tick;
         }
 
 
@@ -161,34 +161,34 @@ namespace Palworld_server_protector_DotNet
 
         //}
 
-        private void getplayerTimer_Tick(object sender, EventArgs e) //获取在线玩家
-        {
-            try
-            {
-                if (!checkBox_geplayers.Checked)
-                {
-                    return;
-                }
+        //private void getplayerTimer_Tick(object sender, EventArgs e) //获取在线玩家
+        //{
+        //    try
+        //    {
+        //        if (!checkBox_geplayers.Checked)
+        //        {
+        //            return;
+        //        }
 
-                RconUtils.TestConnection(rconHost, Convert.ToInt32(rconPortbox.Text), passWordbox.Text);
-                var players = RconUtils.ShowPlayers();
+        //        RconUtils.TestConnection(rconHost, Convert.ToInt32(rconPortbox.Text), passWordbox.Text);
+        //        var players = RconUtils.ShowPlayers();
 
-                playersCounterLabel.Text = $"当前在线：{players.Count}人";
-                // Clear the playersView
-                playersView.Items.Clear();
+        //        playersCounterLabel.Text = $"当前在线：{players.Count}人";
+        //        // Clear the playersView
+        //        playersView.Items.Clear();
 
-                // Add the players information to the playersView
-                foreach (var player in players)
-                {
-                    var item = new ListViewItem(new[] { player.name, player.uid, player.steam_id });
-                    playersView.Items.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                AppendToErrorLog($"获取在线玩家失败：{ex.Message}");
-            }
-        }
+        //        // Add the players information to the playersView
+        //        foreach (var player in players)
+        //        {
+        //            var item = new ListViewItem(new[] { player.name, player.uid, player.steam_id });
+        //            playersView.Items.Add(item);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AppendToErrorLog($"获取在线玩家失败：{ex.Message}");
+        //    }
+        //}
         //private void CopyGameDataToBackupPath()
         //{
         //    try

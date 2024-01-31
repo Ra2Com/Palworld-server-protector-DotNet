@@ -36,7 +36,6 @@ namespace ServerProtectorCore.Monitor
         public override void StartMonitor(MonitorConfig monitorConfig)
         {
             SetConfig(monitorConfig);
-            SetConfig(monitorConfig);
 
             checkTimer = new System.Timers.Timer
             {
